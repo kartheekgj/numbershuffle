@@ -1,0 +1,153 @@
+<html>
+	<head>
+		<title>
+		Number Shuffle game
+		</title>
+	</head>
+		<body>
+			<span id="playButton" >
+				<label>Select Level: </label>
+				<button onClick="createGrid(0);" value="Easy">Easy</button>
+				<button onClick="createGrid(1);" value="Intermediate">Intermediate</button>
+				<button onClick="createGrid(2);" value="Hard">Hard</button>
+			</span>
+			
+			<button id="resetButton" style="display:none;" value="Reset">Reset</button>
+			<table id="grid" border="4" bordercolor="#ff0000" frame="hsides">
+				
+			</table>	
+		</body>
+</html>
+
+
+<style>
+.blank{
+	background-color:#dcdcdc;
+}
+</style>
+
+<script type="text/javascript">
+	var neighbours = [],arrCnt,level = 3;
+	
+	
+	function getNeighbours(arrCnt,blnkIndex){
+		neighbours = [];
+		var blankElement = document.getElementsByClassName("blank")[0];
+		var blankID = blankElement.id;
+		var previous = blankElement.previousSibling;
+
+		var left = previous ? previous.innerHTML : -1;
+		var next = blankElement.nextSibling;
+		var top 	= parseInt(blankID,10)-level;
+		var bottom 	= (arrCnt > parseInt(blankID,10)+level) ? parseInt(blankID,10)+level : -1;
+		
+		var right =  next ? next.innerHTML : -1;
+		if(right !== -1){
+			neighbours.push(right);
+		}
+
+		if(left !== -1){
+			neighbours.push(left);
+		}
+		if(top > -1) {
+			neighbours.push(document.getElementById(top).innerHTML);
+		}
+		if(bottom > -1) {
+			neighbours.push(document.getElementById(bottom).innerHTML);
+		} 
+	
+
+	}
+
+
+	function swap(event){
+		var target = event.target;
+		var id = target.id;
+		var value = target.innerHTML;
+
+		if(neighbours.indexOf(value) !== -1){
+			var blankElement= document.getElementsByClassName("blank")[0];
+			document.getElementById(blankElement.id).innerHTML = value;
+			document.getElementById(id).innerHTML = "blank";
+			document.getElementById(blankElement.id).className ="";
+			document.getElementById(id).className ="blank";
+		}
+		if(!validate()){
+			getNeighbours(arrCnt,parseInt(document.getElementsByClassName("blank")[0].id,10));
+		}else{
+
+			createGrid(level +1);
+		}
+		
+	}
+	
+
+	function validate(){
+
+
+		var valid = [], isValid = true;
+		for(var i=0;i< arrCnt;i++){
+			valid.push(parseInt(document.getElementById(i).innerHTML,10));
+		}
+		var sortedArr = valid.sort();
+
+		for(var i=0;i< sortedArr.length;i++){
+				if(sortedArr[i] !== valid[i]){
+						isValid = false;
+						break;
+				}
+		}
+		
+		return isValid;
+
+	}
+	
+	function createGrid(ll){
+
+		
+		var tableGrid = '';
+		var blankId;
+		level = parseInt(ll,10)+3;
+		grids = (level)*(level);
+		var arrayGrid = new Array();
+		
+		
+		
+		for(var i=0;i< grids;i++){
+			arrayGrid.push(i);
+		}
+		
+		arrayGrid.sort(function(){
+			return Math.round(Math.random()) - 0.5;
+		});
+
+		tableGrid += '<tr>';
+		
+		arrCnt  = arrayGrid.length;
+		
+		for(var i=0;i< arrCnt;i++){
+			if(i%(level) == 0 && i != 0){
+			   tableGrid+= '</tr><tr>'
+			}
+			if((arrayGrid[i]) == 0){
+				tableGrid += 	'<td value="'+ (i) +'" id="'+ i +'" onClick="swap(event)" class="blank" >blank</td>';
+				blankId = i;
+				
+				
+			} else{
+				tableGrid += 	'<td value='+ (i) +' id="'+ i +'" onClick="swap(event)">'+ arrayGrid[i] +'</td>';	
+			}
+		}
+		tableGrid += '</tr>';
+		document.getElementById('grid').innerHTML = tableGrid;	
+		document.getElementById('resetButton').style = 'display:block';
+		var fn = function(){
+			createGrid(ll);
+		}
+		document.getElementById('resetButton').addEventListener('click',fn,false)
+		
+		getNeighbours(arrCnt,blankId);
+	}
+	
+
+</script>
