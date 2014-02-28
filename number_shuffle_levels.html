@@ -64,13 +64,18 @@
 		var target = event.target;
 		var id = target.id;
 		var value = target.innerHTML;
-		
+		console.log(target);
 		if(neighbours.indexOf(value) !== -1){
-			var blankElement= document.getElementsByClassName("blank")[0];
-			document.getElementById(blankElement.id).innerHTML = value;
-			document.getElementById(id).innerHTML = "blank";
-			document.getElementById(blankElement.id).className ="";
-			document.getElementById(id).className ="blank";
+			try{
+				var blankElement= document.getElementsByClassName("blank")[0];
+				console.log(blankElement);
+				document.getElementById(blankElement.id).innerHTML = value;
+				document.getElementById(id).innerHTML = "blank";
+				document.getElementById(blankElement.id).className ="";
+				document.getElementById(id).className ="blank";	
+			} catch(e){
+					console.log(e);
+			}
 		}
 		if(!validate()){
 			getNeighbours(arrCnt,parseInt(document.getElementsByClassName("blank")[0].id,10));
