@@ -27,7 +27,7 @@
 </style>
 
 <script type="text/javascript">
-	var neighbours = [],arrCnt,ll = 0;
+	var neighbours = [],arrCnt,userLevel;
 	
 	
 	function getNeighbours(arrCnt,blnkIndex){
@@ -64,23 +64,19 @@
 		var target = event.target;
 		var id = target.id;
 		var value = target.innerHTML;
-		console.log(target);
+		
 		if(neighbours.indexOf(value) !== -1){
-			try{
-				var blankElement= document.getElementsByClassName("blank")[0];
-				console.log(blankElement);
-				document.getElementById(blankElement.id).innerHTML = value;
-				document.getElementById(id).innerHTML = "blank";
-				document.getElementById(blankElement.id).className ="";
-				document.getElementById(id).className ="blank";	
-			} catch(e){
-					console.log(e);
-			}
+			var blankElement= document.getElementsByClassName("blank")[0];
+			document.getElementById(blankElement.id).innerHTML = value;
+			document.getElementById(id).innerHTML = "blank";
+			document.getElementById(blankElement.id).className ="";
+			document.getElementById(id).className ="blank";	
 		}
 		if(!validate()){
 			getNeighbours(arrCnt,parseInt(document.getElementsByClassName("blank")[0].id,10));
 		}else{
-			createGrid(ll +1);
+			
+			createGrid(userLevel +1);
 		}
 		
 	}
@@ -89,28 +85,43 @@
 	function validate(){
 
 
-		var valid = [], isValid = true;
+		var valid = [], isValid = true,element;
 		for(var i=0;i< arrCnt;i++){
-			valid.push(isNaN(parseInt(document.getElementById(i).innerHTML,10)) ? -1 : parseInt(document.getElementById(i).innerHTML,10));
+			elemnt = '';
+			elemnt = parseInt(document.getElementById(i).innerHTML,10);
+			if(isNaN(elemnt)){
+				valid.push(9999);	
+			}else{
+				valid.push(elemnt);	
+			}
+			
 		}
-		var sortedArr = valid.sort();
+		// stupid concept of cloning comes here hattsoff to object reference
+		var sortedArr = JSON.parse(JSON.stringify(valid));
+		sortedArr.sort(function(a,b){
+			return a-b;
+		});
 		
 		for(var i=0;i< sortedArr.length;i++){
-				if(sortedArr[i] !== valid[i]){
-						isValid = false;
-						break;
-				}
+			if(sortedArr[i] !== valid[i]){
+					isValid = false;
+					break;
+			}
 		}
 		
 		return isValid;
 
 	}
 	
+	
+	
+	
 	function createGrid(ll){
 
 		
 		var tableGrid = '';
 		var blankId;
+		userLevel = ll;
 		level = parseInt(ll,10)+3;
 		grids = (level)*(level);
 		var arrayGrid = new Array();
@@ -124,12 +135,7 @@
 		arrayGrid.sort(function(){
 			return Math.round(Math.random()) - 0.5;
 		});
-		if(ll == 0)
-		arrayGrid = [1,2,3,4,5,6,7,0,8];
-		if(ll == 1)
-		arrayGrid = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,0,15];
 		
-
 		tableGrid += '<tr>';
 		
 		arrCnt  = arrayGrid.length;
