@@ -27,7 +27,7 @@
 </style>
 
 <script type="text/javascript">
-	var neighbours = [],arrCnt,level = 3;
+	var neighbours = [],arrCnt,ll = 0;
 	
 	
 	function getNeighbours(arrCnt,blnkIndex){
@@ -64,7 +64,7 @@
 		var target = event.target;
 		var id = target.id;
 		var value = target.innerHTML;
-
+		
 		if(neighbours.indexOf(value) !== -1){
 			var blankElement= document.getElementsByClassName("blank")[0];
 			document.getElementById(blankElement.id).innerHTML = value;
@@ -75,8 +75,7 @@
 		if(!validate()){
 			getNeighbours(arrCnt,parseInt(document.getElementsByClassName("blank")[0].id,10));
 		}else{
-
-			createGrid(level +1);
+			createGrid(ll +1);
 		}
 		
 	}
@@ -87,10 +86,10 @@
 
 		var valid = [], isValid = true;
 		for(var i=0;i< arrCnt;i++){
-			valid.push(parseInt(document.getElementById(i).innerHTML,10));
+			valid.push(isNaN(parseInt(document.getElementById(i).innerHTML,10)) ? -1 : parseInt(document.getElementById(i).innerHTML,10));
 		}
 		var sortedArr = valid.sort();
-
+		
 		for(var i=0;i< sortedArr.length;i++){
 				if(sortedArr[i] !== valid[i]){
 						isValid = false;
@@ -120,6 +119,11 @@
 		arrayGrid.sort(function(){
 			return Math.round(Math.random()) - 0.5;
 		});
+		if(ll == 0)
+		arrayGrid = [1,2,3,4,5,6,7,0,8];
+		if(ll == 1)
+		arrayGrid = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,0,15];
+		
 
 		tableGrid += '<tr>';
 		
