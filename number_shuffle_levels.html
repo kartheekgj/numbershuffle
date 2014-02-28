@@ -3,6 +3,12 @@
 		<title>
 		Number Shuffle game
 		</title>
+		<style>
+			.data_shuffle{
+				width : 100px;
+			}
+		
+		</style>
 	</head>
 		<body>
 			<span id="playButton" >
@@ -13,7 +19,7 @@
 			</span>
 			
 			<button id="resetButton" style="display:none;" value="Reset">Reset</button>
-			<table id="grid" border="4" bordercolor="#ff0000" frame="hsides">
+			<table id="grid" class="table table-striped">
 				
 			</table>	
 		</body>
@@ -96,7 +102,7 @@
 			}
 			
 		}
-		// stupid concept of cloning comes here hattsoff to object reference
+		
 		var sortedArr = JSON.parse(JSON.stringify(valid));
 		sortedArr.sort(function(a,b){
 			return a-b;
@@ -136,21 +142,21 @@
 			return Math.round(Math.random()) - 0.5;
 		});
 		
-		tableGrid += '<tr>';
+		tableGrid += '<tr class="row_shuffle">';
 		
 		arrCnt  = arrayGrid.length;
 		
 		for(var i=0;i< arrCnt;i++){
 			if(i%(level) == 0 && i != 0){
-			   tableGrid+= '</tr><tr>'
+			   tableGrid+= '</tr><tr class="row_shuffle">'
 			}
 			if((arrayGrid[i]) == 0){
-				tableGrid += 	'<td value="'+ (i) +'" id="'+ i +'" onClick="swap(event)" class="blank" >blank</td>';
+				tableGrid += 	'<td value="'+ (i) +'" id="'+ i +'" onClick="swap(event)" class="blank data_shuffle" >blank</td>';
 				blankId = i;
 				
 				
 			} else{
-				tableGrid += 	'<td value='+ (i) +' id="'+ i +'" onClick="swap(event)">'+ arrayGrid[i] +'</td>';	
+				tableGrid += 	'<td value='+ (i) +' id="'+ i +'" onClick="swap(event)" class="data_shuffle">'+ arrayGrid[i] +'</td>';	
 			}
 		}
 		tableGrid += '</tr>';
