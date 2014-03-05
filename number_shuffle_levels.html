@@ -4,13 +4,27 @@
 		Number Shuffle game
 		</title>
 		<style>
-			.data_shuffle{
+			.data_shuffle,.blank{
 				width : 100px;
+				border : solid;
+				text-align:center;
 			}
-		
+			.tab_shuffle{
+				border : solid;
+			}
+			table {
+				width:50%;	
+				height:50%;
+			}
+			.blank{
+				background-color:#dcdcdc;
+			}
+			ul{
+				list-style:none;	
+			}
 		</style>
 	</head>
-		<body>
+		<body onLoad='createGrid(0);'>
 			<span id="playButton" >
 				<label>Select Level: </label>
 				<button onClick="createGrid(0);" value="Easy">Easy</button>
@@ -19,17 +33,27 @@
 			</span>
 			
 			<button id="resetButton" style="display:none;" value="Reset">Reset</button>
-			<table id="grid" class="table table-striped">
+			<table id="grid" class="tab_shuffle">
+			</table>
+			
+			<ul>
+				<li>
+					<strong>Instructions:</strong>
+				</li>
+			</ul>
+			<ol>
+				<li>
+					Movable cells can be horizontally or vertically adjacent to empty(Blank) cell.
+				</li>
+				<li>
+					Arrange all the numbers in ascending order to win the game.
+				</li>
 				
-			</table>	
+			</ol>
 		</body>
 </html>
-
-
 <style>
-.blank{
-	background-color:#dcdcdc;
-}
+
 </style>
 
 <script type="text/javascript">
@@ -75,13 +99,13 @@
 			var blankElement= document.getElementsByClassName("blank")[0];
 			document.getElementById(blankElement.id).innerHTML = value;
 			document.getElementById(id).innerHTML = "blank";
-			document.getElementById(blankElement.id).className ="";
+			document.getElementById(blankElement.id).className ="data_shuffle";
 			document.getElementById(id).className ="blank";	
 		}
 		if(!validate()){
 			getNeighbours(arrCnt,parseInt(document.getElementsByClassName("blank")[0].id,10));
 		}else{
-			
+			alert( 'You completed Level: ' + userLevel + ' -- Starting Level: ' + userLevel);
 			createGrid(userLevel +1);
 		}
 		
@@ -151,7 +175,7 @@
 			   tableGrid+= '</tr><tr class="row_shuffle">'
 			}
 			if((arrayGrid[i]) == 0){
-				tableGrid += 	'<td value="'+ (i) +'" id="'+ i +'" onClick="swap(event)" class="blank data_shuffle" >blank</td>';
+				tableGrid += 	'<td value="'+ (i) +'" id="'+ i +'" onClick="swap(event)" class="blank">blank</td>';
 				blankId = i;
 				
 				
