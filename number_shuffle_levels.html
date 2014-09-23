@@ -33,6 +33,9 @@
 			</span>
 			
 			<button id="resetButton" style="display:none;" value="Reset">Reset</button>
+			<hr/>	
+          		<h4>Number of Moves : <span id="mvesCnt"></span><h4>
+          		<hr/>
 			<table id="grid" class="tab_shuffle">
 			</table>
 			
@@ -57,11 +60,12 @@
 </style>
 
 <script type="text/javascript">
-	
 	var numShuffle = 
 	{
 		data	:	{
-			neighbours : []
+			neighbours : [],
+            		mvesCnt : 0
+            
 		},	
 		getNeighbours : function(arrCnt,blnkIndex)
 		{
@@ -103,7 +107,8 @@
 				document.getElementById(blankElement.id).innerHTML = value;
 				document.getElementById(id).innerHTML = "blank";
 				document.getElementById(blankElement.id).className ="data_shuffle";
-				document.getElementById(id).className ="blank";	
+				document.getElementById(id).className ="blank";
+              			document.getElementById('mvesCnt').innerHTML = ++numShuffle.data.mvesCnt;
 			}
 			if( ! numShuffle.validate()){
 				numShuffle.getNeighbours(arrCnt,parseInt(document.getElementsByClassName("blank")[0].id,10));
@@ -131,7 +136,7 @@
 				return a-b;
 			});
 			
-			for(var i=0;i< sortedArr.length;i++){
+			for(i=0;i< sortedArr.length;i++){
 				if(sortedArr[i] !== valid[i]){
 						isValid = false;
 						break;
@@ -146,7 +151,7 @@
 			userLevel = ll;
 			level = parseInt(ll,10)+3;
 			grids = (level)*(level);
-			var arrayGrid = new Array();
+            var arrayGrid = [];
 			for(var i=0;i< grids;i++){
 				arrayGrid.push(i);
 			}
@@ -154,16 +159,16 @@
 			arrayGrid.sort(function(){
 				return Math.round(Math.random()) - 0.5;
 			});
-			
+			document.getElementById('mvesCnt').innerHTML = numShuffle.data.mvesCnt;
 			tableGrid += '<tr class="row_shuffle">';
 			
 			arrCnt  = arrayGrid.length;
 			
-			for(var i=0;i< arrCnt;i++){
-				if(i%(level) == 0 && i != 0){
-				   tableGrid+= '</tr><tr class="row_shuffle">'
+			for(i=0;i< arrCnt;i++){
+				if(i%(level) === 0 && i !== 0){
+				   tableGrid+= '</tr><tr class="row_shuffle">';
 				}
-				if((arrayGrid[i]) == 0){
+				if((arrayGrid[i]) === 0){
 					tableGrid += 	'<td value="'+ (i) +'" id="'+ i +'" onClick="numShuffle.swap(event)" class="blank">blank</td>';
 					blankId = i;
 					
@@ -177,11 +182,11 @@
 			document.getElementById('resetButton').style = 'display:block';
 			var fn = function(){
 				numShuffle.createGrid(ll);
-			}
-			document.getElementById('resetButton').addEventListener('click',fn,false)
+			};
+			document.getElementById('resetButton').addEventListener('click',fn,false);
 			
 			numShuffle.getNeighbours(arrCnt,blankId);
 		}
-	}
+	};	
 	
 </script>
