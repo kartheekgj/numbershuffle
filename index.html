@@ -1,0 +1,193 @@
+<html>
+	<head>
+		<title>
+		Number Shuffle game
+		</title>
+		<style>
+			.data_shuffle,.blank{
+				width : 100px;
+				border : solid;
+				text-align:center;
+			}
+			.tab_shuffle{
+				border : solid;
+			}
+			table {
+				width:50%;	
+				height:50%;
+			}
+			.blank{
+				background-color:#dcdcdc;
+			}
+			ul{
+				list-style:none;	
+			}
+		</style>
+	</head>
+		<body onLoad='numShuffle.createGrid(0);'>
+			<span id="playButton" >
+				<label>Select Level: </label>
+				<button onClick="numShuffle.createGrid(0);" value="Easy">Easy</button>
+				<button onClick="numShuffle.createGrid(1);" value="Intermediate">Intermediate</button>
+				<button onClick="numShuffle.createGrid(2);" value="Hard">Hard</button>
+			</span>
+			
+			<button id="resetButton" style="display:none;" value="Reset">Reset</button>
+			<hr/>	
+          		<h4>Number of Moves : <span id="mvesCnt"></span><h4>
+          		<hr/>
+			<table id="grid" class="tab_shuffle">
+			</table>
+			
+			<ul>
+				<li>
+					<strong>Instructions:</strong>
+				</li>
+			</ul>
+			<ol>
+				<li>
+					Movable cells can be horizontally or vertically adjacent to empty(Blank) cell.
+				</li>
+				<li>
+					Arrange all the numbers in ascending order to win the game.
+				</li>
+				
+			</ol>
+		</body>
+</html>
+<style>
+
+</style>
+
+<script type="text/javascript">
+	var numShuffle = 
+	{
+		data	:	{
+			neighbours : [],
+            		mvesCnt : 0
+            
+		},	
+		getNeighbours : function(arrCnt,blnkIndex)
+		{
+			numShuffle.data.neighbours = [];
+			var blankElement = document.getElementsByClassName("blank")[0];
+			var blankID = blankElement.id;
+			var previous = blankElement.previousSibling;
+
+			var left = previous ? previous.innerHTML : -1;
+			var next = blankElement.nextSibling;
+			var top 	= parseInt(blankID,10)-level;
+			var bottom 	= (arrCnt > parseInt(blankID,10)+level) ? parseInt(blankID,10)+level : -1;
+			
+			var right =  next ? next.innerHTML : -1;
+			if(right !== -1){
+				numShuffle.data.neighbours.push(right);
+			}
+
+			if(left !== -1){
+				numShuffle.data.neighbours.push(left);
+			}
+			if(top > -1) {
+				numShuffle.data.neighbours.push(document.getElementById(top).innerHTML);
+			}
+			if(bottom > -1) {
+				numShuffle.data.neighbours.push(document.getElementById(bottom).innerHTML);
+			} 
+		
+
+		},
+		swap	:	function(event)
+		{
+			var target = event.target;
+			var id = target.id;
+			var value = target.innerHTML;
+			
+			if(numShuffle.data.neighbours.indexOf(value) !== -1){
+				var blankElement= document.getElementsByClassName("blank")[0];
+				document.getElementById(blankElement.id).innerHTML = value;
+				document.getElementById(id).innerHTML = "blank";
+				document.getElementById(blankElement.id).className ="data_shuffle";
+				document.getElementById(id).className ="blank";
+              			document.getElementById('mvesCnt').innerHTML = ++numShuffle.data.mvesCnt;
+			}
+			if( ! numShuffle.validate()){
+				numShuffle.getNeighbours(arrCnt,parseInt(document.getElementsByClassName("blank")[0].id,10));
+			}else{
+				alert( 'You completed Level: ' + userLevel + ' -- Starting Level: ' + userLevel);
+				numShuffle.createGrid(userLevel +1);
+			}
+		},
+		validate	:	function()
+		{
+			var valid = [], isValid = true,element;
+			for(var i=0;i< arrCnt;i++){
+				elemnt = '';
+				elemnt = parseInt(document.getElementById(i).innerHTML,10);
+				if(isNaN(elemnt)){
+					valid.push(9999);	
+				}else{
+					valid.push(elemnt);	
+				}
+				
+			}
+			
+			var sortedArr = JSON.parse(JSON.stringify(valid));
+			sortedArr.sort(function(a,b){
+				return a-b;
+			});
+			
+			for(i=0;i< sortedArr.length;i++){
+				if(sortedArr[i] !== valid[i]){
+						isValid = false;
+						break;
+				}
+			}
+			
+			return isValid;
+		},
+		createGrid	:	function(ll){
+			var tableGrid = '';
+			var blankId;
+			userLevel = ll;
+			level = parseInt(ll,10)+3;
+			grids = (level)*(level);
+			numShuffle.data.mvesCnt = 0; //Resetting moves count          
+            		var arrayGrid = [];
+			for(var i=0;i< grids;i++){
+				arrayGrid.push(i);
+			}
+			
+			arrayGrid.sort(function(){
+				return Math.round(Math.random()) - 0.5;
+			});
+			document.getElementById('mvesCnt').innerHTML = numShuffle.data.mvesCnt;
+			tableGrid += '<tr class="row_shuffle">';
+			
+			arrCnt  = arrayGrid.length;
+			
+			for(i=0;i< arrCnt;i++){
+				if(i%(level) === 0 && i !== 0){
+				   tableGrid+= '</tr><tr class="row_shuffle">';
+				}
+				if((arrayGrid[i]) === 0){
+					tableGrid += 	'<td value="'+ (i) +'" id="'+ i +'" onClick="numShuffle.swap(event)" class="blank">blank</td>';
+					blankId = i;
+					
+					
+				} else{
+					tableGrid += 	'<td value='+ (i) +' id="'+ i +'" onClick="numShuffle.swap(event)" class="data_shuffle">'+ arrayGrid[i] +'</td>';	
+				}
+			}
+			tableGrid += '</tr>';
+			document.getElementById('grid').innerHTML = tableGrid;	
+			document.getElementById('resetButton').style = 'display:block';
+			var fn = function(){
+				numShuffle.createGrid(ll);
+			};
+			document.getElementById('resetButton').addEventListener('click',fn,false);
+			
+			numShuffle.getNeighbours(arrCnt,blankId);
+		}
+	};	
+	
+</script>
